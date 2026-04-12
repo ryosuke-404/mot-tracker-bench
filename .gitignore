@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.claude/
+outputs/all_combos.tar.gz
+outputs/compare/
+outputs/test4_combos/
+outputs/test5_combos/
+outputs/reid_compare/
+assets/
+outputs/result.mp4
+outputs/result_v2.mp4
+outputs/result_v3.mp4
+outputs/result_yolox.mp4

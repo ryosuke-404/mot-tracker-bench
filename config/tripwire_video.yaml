@@ -1,0 +1,33 @@
+# ==============================================================================
+# Tripwire config for assets/142755-780943401_medium.mp4
+#
+# Camera setup:
+#   - Single camera mounted at the REAR of the bus, facing FORWARD
+#   - Front door/fare gate visible at the far end of the aisle (center of image)
+#   - Boarding: person moves from door area (small, far) toward camera (large, near)
+#             = centroid Y increases (top → bottom in image)
+#   - Alighting: person moves from rear of bus toward door
+#             = centroid Y decreases
+#
+# Horizontal lines span the aisle width:
+#   outer_line: y=0.60  — just past the front door threshold
+#   inner_line: y=0.74  — deeper into the cabin (confirmed entry/exit)
+#
+# Inward normal: (0, +1) = downward in image = toward camera = boarding direction
+# ==============================================================================
+
+cameras:
+  front:
+    doors:
+      - door_id: front_door
+        lines:
+          outer:
+            line_id: front_door_outer
+            p1: [0.28, 0.60]    # left edge of aisle at y=0.60
+            p2: [0.72, 0.60]    # right edge of aisle at y=0.60
+            inward_normal: [0.0, 1.0]   # downward = toward camera = boarding
+          inner:
+            line_id: front_door_inner
+            p1: [0.25, 0.74]
+            p2: [0.75, 0.74]
+            inward_normal: [0.0, 1.0]

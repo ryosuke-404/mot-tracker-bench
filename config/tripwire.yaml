@@ -1,0 +1,49 @@
+# ==============================================================================
+# Virtual Tripwire Line Definitions
+#
+# Coordinates are NORMALIZED [0.0, 1.0] relative to camera frame size.
+# This ensures lines remain valid regardless of input resolution changes.
+#
+# Line crossing direction:
+#   The "inward normal" vector points INTO the bus interior.
+#   board_sign: +1 means crossing from negative side to positive side = boarding
+#   board_sign: -1 means opposite
+#
+# Two-line sequence for reliable detection:
+#   - outer_line: closer to the door opening (outside)
+#   - inner_line: further inside the bus cabin
+#   Boarding:  outer → inner  (both crossed in inward direction)
+#   Alighting: inner → outer  (both crossed in outward direction)
+# ==============================================================================
+
+cameras:
+  front:
+    doors:
+      - door_id: "front_door"
+        lines:
+          outer:
+            line_id: "front_door_outer"
+            p1: [0.35, 0.10]    # [x_norm, y_norm]
+            p2: [0.35, 0.90]
+            # Inward normal points rightward (+x direction)
+            inward_normal: [1.0, 0.0]
+          inner:
+            line_id: "front_door_inner"
+            p1: [0.55, 0.10]
+            p2: [0.55, 0.90]
+            inward_normal: [1.0, 0.0]
+
+  rear:
+    doors:
+      - door_id: "rear_door"
+        lines:
+          outer:
+            line_id: "rear_door_outer"
+            p1: [0.30, 0.10]
+            p2: [0.30, 0.90]
+            inward_normal: [1.0, 0.0]
+          inner:
+            line_id: "rear_door_inner"
+            p1: [0.50, 0.10]
+            p2: [0.50, 0.90]
+            inward_normal: [1.0, 0.0]

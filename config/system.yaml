@@ -1,0 +1,82 @@
+# ==============================================================================
+# Bus OD Tracking System — Global Configuration
+# ==============================================================================
+
+system:
+  vehicle_id: "BUS_001"
+  route_id: "ROUTE_A"
+  frame_rate: 25
+  device: "cuda"               # "cuda" | "cpu" | "jetson"
+  log_level: "INFO"
+  data_dir: "./data"
+  db_path: "./data/od_events.db"
+
+# Camera configuration
+cameras:
+  - id: "front"
+    source: 0                  # device index, or RTSP URL string
+    resolution: [1920, 1080]
+    fps: 25
+    role: "front_door"
+  - id: "rear"
+    source: 1
+    resolution: [1920, 1080]
+    fps: 25
+    role: "rear_door"
+
+# RT-DETRv2 detector
+detector:
+  model_name: "PekingU/rtdetr_v2_r50vd"    # HuggingFace model ID
+  onnx_path: null                           # if set, use ONNX instead of torch
+  person_class_id: 0                        # COCO class 0 = person
+  high_score_thresh: 0.50
+  low_score_thresh: 0.10
+  input_size: [640, 640]
+  batch_size: 1
+
+# SORT (tuned) — GT score 0.647, best in 18-variant evaluation (2026-04-10)
+# Raised track_thresh from 0.45→0.60 to suppress ghost tracks (ODrate 2.0x→1.35x)
+tracker:
+  type: "sort"
+  track_thresh: 0.60           # high/low detection split (raised from 0.45 to cut ghost tracks)
+  max_age: 90                  # frames to hold Lost track (~3.6s at 25fps)
+  min_hits: 3                  # frames before Tentative → Confirmed
+  iou_thresh: 0.30             # IoU gate for matching
+
+# FastReID
+reid:
+  enabled: true
+  model_path: "./models/reid_r50ibn_market1501.onnx"
+  input_size: [256, 128]       # height, width
+  feature_dim: 2048
+  similarity_thresh: 0.75      # cosine similarity threshold for gallery match
+  gallery_max_size: 500        # max number of identities in gallery
+  embeddings_per_id: 10        # rolling window of embeddings per track
+
+# Virtual tripwire — overridden per-camera in tripwire.yaml
+tripwire:
+  config_path: "./config/tripwire.yaml"
+  sequence_timeout_frames: 75  # max frames for 2-line crossing sequence
+  direction_dot_thresh: 0.3    # min dot product to accept direction
+
+# GPS
+gps:
+  enabled: true
+  port: "/dev/ttyUSB0"
+  baud_rate: 9600
+  stop_list_path: "./data/stops.json"
+  proximity_radius_m: 30.0
+
+# Cloud sync
+sync:
+  enabled: false
+  endpoint_url: ""
+  api_key_env: "SYNC_API_KEY"
+  batch_size: 50
+  retry_interval_s: 60
+
+# Power / lifecycle
+lifecycle:
+  ignition_gpio_pin: 7         # Jetson GPIO pin for ACC ignition sense
+  shutdown_delay_s: 10.0       # wait after ignition OFF before shutdown
+  watchdog_interval_s: 5.0

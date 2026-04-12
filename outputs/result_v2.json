@@ -1,0 +1,10 @@
+[
+  {
+    "id": 1,
+    "track_id": 13,
+    "board_stop": "STOP_UNKNOWN",
+    "board_ts": "2026-04-08T17:04:41.975982+00:00",
+    "alight_stop": "STOP_UNKNOWN",
+    "alight_ts": "2026-04-08T17:08:06.514892+00:00"
+  }
+]
