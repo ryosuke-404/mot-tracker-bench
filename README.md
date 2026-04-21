@@ -1,4 +1,4 @@
-# Bus Passenger OD Tracking System
+# MOT Tracker Bench
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python" />
@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  Real-time multi-object tracking system for counting bus passengers at door entry/exit.<br>
-  Combines state-of-the-art MOT algorithms, Re-ID-based identity recovery, and virtual tripwire crossing detection.
+  Plug-and-play benchmark framework for pedestrian multi-object tracking.<br>
+  16 MOT algorithms × 37 Re-ID configurations, all switchable via a single YAML parameter.
 </p>
 
 ---
@@ -26,7 +26,7 @@
   Source footage: <a href="https://www.pexels.com/ja-jp/video/36926122/">Pexels #36926122</a> (Pexels License)
 </p>
 
-The system detects and tracks every person in view, assigns persistent IDs, and fires **BOARD / ALIGHT** events when a person crosses the virtual door lines.
+The system detects and tracks every pedestrian in view, assigns persistent IDs across frames, and recovers lost identities via Re-ID gallery matching even after full occlusion.
 
 ---
 
@@ -36,8 +36,8 @@ The system detects and tracks every person in view, assigns persistent IDs, and 
 - **37 Re-ID model configurations** — cascade fallback from FastReID ONNX → OSNet → ResNet50
 - **Two detectors** — YOLOX (speed) and RT-DETRv2 (accuracy), interchangeable API
 - **Re-ID Rescue** — lost tracks matched against an embedding gallery; IDs survive full occlusion
-- **Virtual tripwire** — normalized 2-line door definition; robust to any resolution
-- **Edge-first design** — runs on Jetson Xavier/Orin; GPIO-based ignition/shutdown lifecycle
+- **Virtual tripwire** — normalized line-crossing detection for counting pedestrians at any zone boundary
+- **Edge-first design** — runs on Jetson Xavier/Orin; GPIO-based lifecycle management
 - **Privacy blur script** — mosaic pixelation of all detected persons for demo/public use
 
 ---
@@ -56,9 +56,9 @@ flowchart TD
         BT -->|centroids| TW["Tripwire Manager\n(outer → inner sequence)"]
     end
 
-    TW -->|BOARD / ALIGHT events| OD["OD Tracker\n(board/alight pairing)"]
-    OD --> DB[(SQLite / Cloud Sync)]
-    OD --> GPS[GPS Stop Resolver]
+    TW -->|crossing events| OD["Event Tracker\n(entry/exit pairing)"]
+    OD --> DB[(SQLite / Storage)]
+    OD --> GPS[Location Resolver]
 ```
 
 ---
@@ -93,7 +93,7 @@ Full evaluation report: [tracking_evaluation_report.md](tracking_evaluation_repo
 | **SORT** | Kalman filter + IoU | Lightweight baseline |
 | **DeepSORT** | SORT + Re-ID cosine + Mahalanobis gating | Long-gap ID recovery |
 | **ByteTrack** | Two-stage matching (high/low confidence) | Occlusion robustness |
-| **OC-SORT** | ByteTrack + OCM/OCR momentum | Dense crossing stability |
+| **OC-SORT** | ByteTrack + OCM/OCR momentum | Dense crowd stability |
 | **BoTSORT** | ByteTrack + GMC camera compensation + Re-ID | Moving camera / high rescue |
 | **StrongSORT** | NSA Kalman + EMA feature smoothing | Noise-resilient tracking |
 | **HybridSORT** | Hybrid IoU-appearance cost fusion | Balanced tradeoff |
@@ -126,8 +126,8 @@ ResNet50 (torchvision)    ← always available, no extra deps
 **Prerequisites**: Python 3.10+, pip
 
 ```bash
-git clone https://github.com/<your-username>/bus-od-tracking.git
-cd bus-od-tracking
+git clone https://github.com/ryosuke-404/mot-tracker-bench.git
+cd mot-tracker-bench
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 
@@ -186,7 +186,7 @@ python scripts/run_video_compare.py \
     --configs "bytetrack+osnet" "ocsort+osnet" "strongsort+osnet"
 ```
 
-### Live camera (bus deployment)
+### Live camera
 
 ```bash
 python scripts/run_bus.py \
@@ -203,8 +203,8 @@ All behaviour is controlled by two YAML files.
 
 ```yaml
 system:
-  vehicle_id: "BUS_001"
-  route_id:   "ROUTE_42"
+  camera_id:  "CAM_01"
+  scene_id:   "SCENE_A"
   frame_rate: 25
   device:     "cuda"           # cpu / cuda / jetson
 
@@ -227,13 +227,13 @@ reid:
   gallery_max:       500
 ```
 
-### `config/tripwire_video.yaml` — door line definitions
+### `config/tripwire_video.yaml` — zone line definitions
 
 ```yaml
 cameras:
   front:
-    doors:
-      - id: main
+    zones:
+      - id: entrance
         outer_line: [[0.25, 0.60], [0.75, 0.60]]
         inner_line: [[0.25, 0.74], [0.75, 0.74]]
         inward_normal: [0.0, 1.0]
@@ -255,7 +255,7 @@ Coordinates are normalized `[0.0, 1.0]` — resolution-independent.
 │   └── ...
 ├── reid/               # Re-ID extractor + embedding gallery
 ├── tripwire/           # Virtual line crossing detection
-├── od/                 # OD event tracking + stop resolution
+├── od/                 # Zone crossing event tracking
 ├── pipeline/           # FrameProcessor — per-frame orchestration
 ├── system/             # Lifecycle (ignition GPIO, watchdog, shutdown)
 ├── gps/                # NMEA GPS reader
@@ -269,14 +269,14 @@ Coordinates are normalized `[0.0, 1.0]` — resolution-independent.
 
 ## Edge Deployment (Jetson)
 
-The system is designed for **NVIDIA Jetson Xavier / Orin** edge boxes installed in vehicles.
+The pipeline is designed to run on **NVIDIA Jetson Xavier / Orin** for real-time on-device inference.
 
 | Feature | Detail |
 |---|---|
-| Ignition sensing | GPIO pin monitoring (ACC signal) — auto start/stop |
+| GPIO lifecycle | External trigger monitoring — auto start/stop |
 | Watchdog | Restarts pipeline on heartbeat stall |
 | TensorRT Re-ID | FastReID ONNX exported for TRT engine via `scripts/export_od.py` |
-| Cloud sync | Batched OD record upload with retry queue |
+| Cloud sync | Batched event record upload with retry queue |
 | Graceful shutdown | SIGTERM → flush DB → release GPIO |
 
 ---
