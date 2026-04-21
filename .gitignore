@@ -13,3 +13,9 @@ outputs/result.mp4
 outputs/result_v2.mp4
 outputs/result_v3.mp4
 outputs/result_yolox.mp4
+outputs/test10_aggr/
+outputs/test10_quality/
+outputs/test10_quality2/
+outputs/test10_top20/
+outputs/demo_blurred.mp4
+outputs/demo_blurred.json

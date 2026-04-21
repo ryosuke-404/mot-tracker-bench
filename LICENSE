@@ -1,0 +1,109 @@
+MIT License
+
+Copyright (c) 2024 SMRI2170
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+Third-Party Licenses
+-------------------------------------------------------------------------------
+
+This project implements algorithms and uses libraries from the following works.
+Each component is governed by its respective license.
+
+## MOT Trackers
+
+### ByteTrack
+  Copyright (c) 2022 ifzhang
+  MIT License — https://github.com/ifzhang/ByteTrack
+
+### OC-SORT
+  Copyright (c) 2022 noahcao
+  MIT License — https://github.com/noahcao/OC_SORT
+
+### BoT-SORT
+  Copyright (c) 2022 NirAharon
+  MIT License — https://github.com/NirAharon/BoT-SORT
+
+### StrongSORT
+  Copyright (c) 2022 dyhBUPT
+  Apache License 2.0 — https://github.com/dyhBUPT/StrongSORT
+
+### DeepSORT
+  Copyright (c) 2017 Nicolai Wojke
+  MIT License — https://github.com/nwojke/deep_sort
+
+### FairMOT
+  Copyright (c) 2020 Yifu Zhang
+  MIT License — https://github.com/ifzhang/FairMOT
+
+### SORT
+  Copyright (c) 2016 Alex Bewley
+  GPL-3.0 License — https://github.com/abewley/sort
+  Note: The SORT algorithm is re-implemented in this project with a
+  compatible interface. Users who require a permissive license should
+  replace this module with their own implementation.
+
+## Detectors
+
+### YOLOX
+  Copyright (c) 2021 Megvii Inc.
+  Apache License 2.0 — https://github.com/Megvii-BaseDetection/YOLOX
+
+### RT-DETRv2
+  Copyright (c) 2023 PaddlePaddle Authors
+  Apache License 2.0 — https://github.com/lyuwenyu/RT-DETR
+
+## Re-ID Models
+
+### FastReID
+  Copyright (c) 2020 JDAI-CV
+  Apache License 2.0 — https://github.com/JDAI-CV/fast-reid
+
+### torchreid / OSNet
+  Copyright (c) 2019 Kaiyang Zhou
+  MIT License — https://github.com/KaiyangZhou/deep-person-reid
+
+## Libraries
+
+### PyTorch / torchvision
+  Copyright (c) 2016 Facebook Inc.
+  BSD 3-Clause License — https://github.com/pytorch/pytorch
+
+### Hugging Face Transformers
+  Copyright (c) 2018 The Hugging Face Team
+  Apache License 2.0 — https://github.com/huggingface/transformers
+
+### OpenCV
+  Copyright (c) 2000 Intel Corporation
+  Apache License 2.0 — https://github.com/opencv/opencv
+
+### NumPy
+  Copyright (c) 2005 NumPy Developers
+  BSD 3-Clause License — https://numpy.org
+
+### SciPy
+  Copyright (c) 2001 SciPy Developers
+  BSD 3-Clause License — https://scipy.org
+
+## Demo Footage
+
+Demo video sourced from Pexels (Video #36926122).
+Used under the Pexels License — https://www.pexels.com/license/
+All persons in the demo output are pixelated (mosaic) and cannot be individually identified.
